@@ -1,0 +1,10 @@
+pnpm-lock.yaml
+packages/contracts/openapi/*.json
+packages/contracts/src/generated/
+packages/database/generated/
+apps/ai-service/
+.next/
+dist/
+.venv/
+supabase/.temp/
+**/src/generated/

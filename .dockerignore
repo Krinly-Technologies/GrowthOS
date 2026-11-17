@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/.venv
+**/__pycache__
+**/.env
+**/.env.*
+.git
+supabase/signing_keys.json
+packages/database/src/generated

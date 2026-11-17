@@ -1,0 +1,5 @@
+{
+  "extends": "@krinly/config/tsconfig.next.json",
+  "compilerOptions": { "plugins": [], "incremental": false, "types": ["node"] },
+  "include": ["src"]
+}

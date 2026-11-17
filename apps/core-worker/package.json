@@ -1,0 +1,34 @@
+{
+  "name": "@krinly/core-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "node ../../scripts/dev-node-service.mjs dist/main.js",
+    "start": "node --enable-source-maps dist/main.js",
+    "failed-jobs": "node --env-file-if-exists=.env dist/failed-jobs.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:integration": "vitest run"
+  },
+  "dependencies": {
+    "@krinly/database": "workspace:*",
+    "bullmq": "6.7.3",
+    "ioredis": "5.11.1",
+    "pino": "10.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@krinly/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "@types/pg": "8.23.1",
+    "eslint": "10.15.0",
+    "pg": "8.23.1",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}

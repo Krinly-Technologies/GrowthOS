@@ -1,0 +1,5 @@
+{
+  "extends": "@krinly/config/tsconfig.node.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "lib": ["ES2023", "DOM"] },
+  "include": ["src"]
+}

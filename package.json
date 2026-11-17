@@ -1,0 +1,29 @@
+{
+  "name": "krinly-growthos",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=22.14.0 <23"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:integration": "turbo run test:integration --concurrency=1",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "contracts:generate": "pnpm --filter @krinly/core-api... build && pnpm --filter @krinly/core-api openapi && uv run --directory apps/ai-service python -m ai_service.export_openapi ../../packages/contracts/openapi/ai-service.json && pnpm --filter @krinly/contracts generate",
+    "py:lint": "uv run --directory apps/ai-service ruff check . && uv run --directory apps/ai-service ruff format --check .",
+    "py:typecheck": "uv run --directory apps/ai-service mypy",
+    "py:test": "uv run --directory apps/ai-service pytest",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm py:lint && pnpm py:typecheck && pnpm py:test"
+  },
+  "devDependencies": {
+    "prettier": "3.10.1",
+    "supabase": "2.122.1",
+    "turbo": "2.11.11"
+  }
+}

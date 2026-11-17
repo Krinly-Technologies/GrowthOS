@@ -1,0 +1,32 @@
+{
+  "name": "@krinly/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "description": "API contracts generated from the services' OpenAPI documents. Do not edit generated files.",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "generate": "openapi-typescript openapi/core-api.json -o src/generated/core-api.ts && openapi-typescript openapi/ai-service.json -o src/generated/ai-service.ts"
+  },
+  "dependencies": {
+    "openapi-fetch": "0.17.0"
+  },
+  "devDependencies": {
+    "@krinly/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "eslint": "10.15.0",
+    "openapi-typescript": "7.13.0",
+    "typescript": "6.0.3"
+  }
+}
