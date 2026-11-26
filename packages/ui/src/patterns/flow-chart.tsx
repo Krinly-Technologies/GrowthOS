@@ -168,7 +168,7 @@ function FlowChart({
         {total === 0 ? (
           <p className="text-sm text-ink-3">{emptyText}</p>
         ) : table ? (
-          <div className="overflow-x-auto">
+          <div tabIndex={0} className="overflow-x-auto">
             <table className="w-full min-w-[520px] text-[13.5px]">
               <caption className="sr-only">{title}</caption>
               <thead>

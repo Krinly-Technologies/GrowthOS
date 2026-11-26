@@ -27,13 +27,15 @@ function FilterToolbar({
 }) {
   return (
     <div className={cn('grid gap-3', className)}>
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         {start ? <div className="min-w-0 flex-1 basis-56">{start}</div> : null}
-        {filters ? <div className="flex flex-wrap items-center gap-2">{filters}</div> : null}
+        {filters ? (
+          <div className="flex min-w-0 flex-wrap items-center gap-2">{filters}</div>
+        ) : null}
         {end ? <div className="ml-auto flex items-center gap-2">{end}</div> : null}
       </div>
       {active.length > 0 || resultSummary ? (
-        <div className="flex flex-wrap items-center gap-2 text-[13px]">
+        <div className="flex min-w-0 flex-wrap items-center gap-2 text-[13px]">
           {resultSummary ? (
             <p aria-live="polite" className="tnum mr-1 text-ink-3">
               {resultSummary}

@@ -10,7 +10,7 @@ import { type ReactNode, useState } from 'react';
 import { Wordmark } from '@/components/wordmark';
 import { AccountMenu } from './account-menu';
 import { CommandSearch, type Destination } from './command-search';
-import { NAV_ITEMS } from './nav-items';
+import { NAV_ITEMS, type NavItem } from './nav-items';
 import { Notifications } from './notifications';
 import { WorkspaceSwitcher } from './workspace-switcher';
 
@@ -25,6 +25,9 @@ export function AppShell({
   organizations,
   name,
   email,
+  navItems = NAV_ITEMS,
+  chrome = 'workspace',
+  banner,
   children,
 }: {
   org: Workspace;
@@ -32,22 +35,33 @@ export function AppShell({
   organizations: Workspace[];
   name: string;
   email: string;
+  /** Sections in the sidebar, mobile bar and command search. Defaults to the production list. */
+  navItems?: readonly NavItem[];
+  /**
+   * `workspace` is the real thing. `preview` drops the identity controls (workspace switcher,
+   * account menu and sign-out), because the development preview has no session or workspace
+   * behind it and must not offer actions that touch one.
+   */
+  chrome?: 'workspace' | 'preview';
+  /** Strip rendered above the page content, e.g. the development-preview notice. */
+  banner?: ReactNode;
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const identity = chrome === 'workspace';
   const isActive = (href: string) => pathname === href;
-  const currentItem = NAV_ITEMS.find((item) => isActive(item.href(org.id)));
+  const currentItem = navItems.find((item) => isActive(item.href(org.id)));
 
   const destinations: Destination[] = [
-    ...NAV_ITEMS.map((item) => ({
+    ...navItems.map((item) => ({
       key: `nav-${item.key}`,
       label: item.label,
       group: 'Go to' as const,
       icon: item.icon,
       href: item.href(org.id),
     })),
-    ...organizations
+    ...(identity ? organizations : [])
       .filter((o) => o.id !== org.id)
       .map((o) => ({
         key: `org-${o.id}`,
@@ -88,12 +102,16 @@ export function AppShell({
           ) : null}
         </div>
 
-        {!collapsed ? (
+        {!collapsed && identity ? (
           <WorkspaceSwitcher
             currentId={org.id}
             organizations={organizations}
             className="mt-5 px-1.5 [&_select]:border-brand-line [&_select]:bg-brand-raised [&_select]:text-on-brand [&_select]:shadow-none"
           />
+        ) : !collapsed ? (
+          <p className="mt-5 truncate rounded-xl bg-brand-raised px-3 py-2 text-[13.5px] font-semibold text-on-brand">
+            {org.name}
+          </p>
         ) : (
           <div className="mt-5 flex justify-center">
             <Tooltip content={org.name}>
@@ -106,7 +124,7 @@ export function AppShell({
 
         <nav aria-label="Workspace" className="mt-6 flex-1">
           <ul className="flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const href = item.href(org.id);
               const active = isActive(href);
               const link = (
@@ -148,7 +166,11 @@ export function AppShell({
               </IconButton>
             </div>
           ) : null}
-          <AccountMenu name={name} email={email} role={role} onBrand />
+          {identity ? (
+            <AccountMenu name={name} email={email} role={role} onBrand />
+          ) : (
+            <p className="px-2.5 py-1.5 text-[12.5px] text-on-brand-2">{role}</p>
+          )}
         </div>
       </aside>
 
@@ -164,12 +186,16 @@ export function AppShell({
           </div>
           <CommandSearch destinations={destinations} />
           <div className="ml-auto flex items-center gap-1.5 md:gap-2">
-            <Notifications />
-            <span className="md:hidden">
-              <AccountMenu name={name} email={email} role={role} />
-            </span>
+            {identity ? <Notifications /> : null}
+            {identity ? (
+              <span className="md:hidden">
+                <AccountMenu name={name} email={email} role={role} />
+              </span>
+            ) : null}
           </div>
         </header>
+
+        {banner}
 
         <main
           id="main"
@@ -183,9 +209,9 @@ export function AppShell({
       {/* Mobile bottom nav */}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-2 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 grid auto-cols-fr grid-flow-col border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
       >
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const href = item.href(org.id);
           const active = isActive(href);
           return (

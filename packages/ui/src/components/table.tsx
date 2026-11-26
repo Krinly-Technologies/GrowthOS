@@ -8,7 +8,9 @@ import { Icon } from './icon';
 
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
-    <div className="w-full overflow-x-auto">
+    // tabIndex makes the scroll container reachable from the keyboard, so a table wider than its
+    // column can be scrolled without a pointer (axe: scrollable-region-focusable).
+    <div tabIndex={0} className="w-full overflow-x-auto">
       <table className={cn('w-full caption-bottom text-sm', className)} {...props} />
     </div>
   );

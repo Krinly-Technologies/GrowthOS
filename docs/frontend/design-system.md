@@ -59,7 +59,11 @@ hex values in components.
   reachable by keyboard and announced. Wrap the app in `ToastProvider` and `TooltipProvider`.
 - Charts: 2px lines, hairline grid, legend plus selective direct labels, keyboard crosshair, and a
   table view. A comparison chart receives the **same comparison value the headline uses**
-  (`comparison={{ value, label }}`) — never derive it from the previous series' bucket.
+  (`comparison={{ value, label }}`) — never derive it from the previous series' bucket. Below
+  440px `ComparisonChart` narrows its margins, labels three points instead of six and drops the
+  previous period's end label; it measures its own container, so just give it room.
+- Any container that scrolls (a table wider than its column, a scrolling table view) is
+  `tabIndex={0}` so it can be scrolled from the keyboard.
 - Don't show unexplained scores or meters. Say why something is prioritised, in words.
 - AI output is a proposal: show it with Apply/Dismiss; it never changes data by itself.
 - Add a shared component only when two screens need it; otherwise keep it in the app.

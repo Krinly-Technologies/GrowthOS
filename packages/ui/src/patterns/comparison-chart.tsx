@@ -18,7 +18,12 @@ interface ChartPoint {
   value: number;
 }
 
-const M = { top: 22, right: 96, bottom: 30, left: 56 };
+// Margins and tick density are width-dependent: the wide form leaves room on the right for the
+// previous period's end label, the narrow form gives the plot the space instead and labels fewer
+// points, so the x axis never collides with itself on a phone.
+const WIDE = { top: 22, right: 96, bottom: 30, left: 56 };
+const NARROW = { top: 22, right: 18, bottom: 30, left: 44 };
+const NARROW_BELOW = 440;
 
 function niceCeil(value: number): number {
   if (value <= 0) return 10;
@@ -63,6 +68,8 @@ function ComparisonChart({
   const [table, setTable] = useState(false);
   const id = useId();
 
+  const narrow = width < NARROW_BELOW;
+  const M = narrow ? NARROW : WIDE;
   const n = Math.max(current.length, previous.length, 2);
   const plotW = Math.max(40, width - M.left - M.right);
   const plotH = height - M.top - M.bottom;
@@ -86,13 +93,16 @@ function ComparisonChart({
   const cmpY = comparison ? y(comparison.value) : null;
   // Direct labels: keep the current label clear of the comparison marker.
   const currentLabelBelow = cmpY !== null && cmpY < endY;
+  // The previous period's end label lives in the right margin, which the narrow layout gives
+  // back to the plot — so it is a wide-layout flourish only.
   const showPrevLabel =
-    previous.length > 0 && (prevEndX - endX > 40 || Math.abs(prevEndY - endY) > 30);
+    !narrow && previous.length > 0 && (prevEndX - endX > 40 || Math.abs(prevEndY - endY) > 30);
 
+  const tickCount = Math.min(n, narrow ? 3 : 6);
   const ticks =
     tickIndices ??
-    Array.from({ length: Math.min(n, 6) }, (_, k) =>
-      Math.round((k / Math.max(1, Math.min(n, 6) - 1)) * (n - 1)),
+    Array.from({ length: tickCount }, (_, k) =>
+      Math.round((k / Math.max(1, tickCount - 1)) * (n - 1)),
     );
   const labelFor = (i: number) => tickLabel?.(i) ?? current[i]?.label ?? previous[i]?.label ?? '';
 
@@ -147,6 +157,7 @@ function ComparisonChart({
       <div ref={wrap} className="mt-2 min-w-0">
         {table ? (
           <div
+            tabIndex={0}
             className="overflow-y-auto rounded-lg border border-line"
             style={{ maxHeight: height }}
           >
