@@ -1,0 +1,390 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Concept B — Growth Studio. Signatures: the Flow, and layered sheets on ink.
+   Keep colour values in sync with lib/palettes.ts (Concept B).
+   ───────────────────────────────────────────────────────────────────────────── */
+
+[data-concept='b'] {
+  --ink: #111c2d;
+  --ink-2: #3a4555;
+  --ink-3: #5c6676;
+  --canvas: #f4f6f3;
+  --canvas-2: #e8ece7;
+  --surface: #ffffff;
+  --line: #e0e5df;
+  --line-soft: #ebefea;
+  --mint: #a8e6bf;
+  --mint-soft: #e2f5e9;
+  --growth: #287d57;
+  --focus: #287d57;
+  --backdrop: #111c2d;
+  --ink-raised: #1c2a40;
+  --ink-line: #2b3a52;
+  --on-ink: #eef2f7;
+  --on-ink-2: #a3afc0;
+  --verified-on-ink: #7fd4dc;
+  /* Flow / pipeline progression ramp (validated as an ordinal ramp: one hue, monotone L). */
+  --step-1: #76c29a;
+  --step-2: #4caa7a;
+  --step-3: #2d8a5c;
+  --step-4: #1b5f40;
+  --lost: #cdd3da;
+  --ui-font:
+    var(--font-manrope), var(--font-noto-deva), var(--font-noto-tamil), system-ui, sans-serif;
+  --display-font:
+    var(--font-bricolage), var(--font-noto-deva), var(--font-noto-tamil), system-ui, sans-serif;
+}
+
+/* Only the type family and leading are set on the concept root. Colour and size are left to
+   inheritance and utilities, so portalled panels that carry data-concept on their root (sheets,
+   menus, dialogs) keep their own text-* classes. */
+[data-concept='b'] {
+  font-family: var(--ui-font);
+  line-height: 1.45;
+}
+
+[data-concept='b'] .b-display {
+  font-family: var(--display-font);
+  font-variation-settings: 'opsz' 96;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-variant-numeric: proportional-nums lining-nums;
+}
+[data-concept='b'] .b-heading {
+  font-family: var(--display-font);
+  font-variation-settings: 'opsz' 28;
+  font-weight: 650;
+  letter-spacing: -0.012em;
+}
+
+/* Anything on the ink backdrop uses a mint focus ring so focus stays visible. */
+[data-concept='b'] .on-ink :focus-visible,
+[data-concept='b'].on-ink :focus-visible,
+[data-concept='b'] .on-ink:focus-visible {
+  outline-color: var(--mint);
+}
+
+/* ── Rail ───────────────────────────────────────────────────────────────────── */
+[data-concept='b'] .b-rail {
+  width: 76px;
+  transition: width 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-concept='b'] .b-rail .b-when-expanded {
+  display: none;
+}
+[data-concept='b'] .b-rail .b-when-collapsed {
+  display: flex;
+}
+@media (min-width: 1024px) {
+  [data-concept='b'] .b-rail[data-collapsed='false'] {
+    width: 236px;
+  }
+  [data-concept='b'] .b-rail[data-collapsed='false'] .b-when-expanded {
+    display: flex;
+  }
+  [data-concept='b'] .b-rail[data-collapsed='false'] .b-when-collapsed {
+    display: none;
+  }
+}
+
+[data-concept='b'] .b-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  color: var(--on-ink-2);
+  font-weight: 600;
+  font-size: 14px;
+}
+[data-concept='b'] .b-nav-item:hover {
+  background: var(--ink-raised);
+  color: var(--on-ink);
+}
+[data-concept='b'] .b-nav-item[aria-current='page'] {
+  background: var(--mint);
+  color: var(--ink);
+}
+[data-concept='b'] .b-nav-count {
+  margin-left: auto;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--ink-raised);
+  color: var(--on-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+[data-concept='b'] .b-nav-item[aria-current='page'] .b-nav-count {
+  background: rgb(17 28 45 / 0.12);
+  color: var(--ink);
+}
+[data-concept='b'] .b-rail-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: var(--on-ink-2);
+}
+[data-concept='b'] .b-rail-icon:hover {
+  background: var(--ink-raised);
+  color: var(--on-ink);
+}
+[data-concept='b'] .b-rail-icon[aria-current='page'] {
+  background: var(--mint);
+  color: var(--ink);
+}
+[data-concept='b'] .b-rail-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--mint);
+  box-shadow: 0 0 0 2px var(--backdrop);
+}
+[data-concept='b'] .b-rail-icon[aria-current='page'] .b-rail-dot {
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--mint);
+}
+
+/* ── The raised sheet ─────────────────────────────────────────────────────── */
+[data-concept='b'] .b-sheet {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.04),
+    0 30px 60px -30px rgb(0 0 0 / 0.55);
+}
+
+/* ── Momentum stack ───────────────────────────────────────────────────────── */
+[data-concept='b'] .b-stack {
+  position: relative;
+}
+[data-concept='b'] .b-stack-card {
+  position: absolute;
+  inset: 0;
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 260ms ease;
+  transform-origin: 50% 0;
+}
+[data-concept='b'] .b-stack-card[data-depth='0'] {
+  z-index: 3;
+  transform: translateY(0) scale(1);
+}
+[data-concept='b'] .b-stack-card[data-depth='1'] {
+  z-index: 2;
+  transform: translateY(-12px) scale(0.955);
+  opacity: 0.92;
+}
+[data-concept='b'] .b-stack-card[data-depth='2'] {
+  z-index: 1;
+  transform: translateY(-24px) scale(0.91);
+  opacity: 0.75;
+}
+[data-concept='b'] .b-stack-card[data-depth='hidden'] {
+  z-index: 0;
+  transform: translateY(-24px) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Pipeline stage ramp (headers and pills) ──────────────────────────────── */
+[data-concept='b'] [data-stage-tone='new'] {
+  --tone-bg: #eef1ee;
+  --tone-fg: #3a4555;
+}
+[data-concept='b'] [data-stage-tone='contacted'] {
+  --tone-bg: #e3f1e9;
+  --tone-fg: #23553c;
+}
+[data-concept='b'] [data-stage-tone='interested'] {
+  --tone-bg: #cdeedb;
+  --tone-fg: #1d5139;
+}
+[data-concept='b'] [data-stage-tone='ready'] {
+  --tone-bg: #a8e6bf;
+  --tone-fg: #123d29;
+}
+[data-concept='b'] [data-stage-tone='booked'] {
+  --tone-bg: #1f6b49;
+  --tone-fg: #ffffff;
+}
+[data-concept='b'] [data-stage-tone='lost'] {
+  --tone-bg: #eceef1;
+  --tone-fg: #5c6676;
+}
+[data-concept='b'] .b-tone {
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+}
+
+[data-concept='b'] .stage-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--step-1);
+}
+[data-concept='b'] .stage-dot[data-index='0'] {
+  background: #cbd3cb;
+}
+[data-concept='b'] .stage-dot[data-index='2'] {
+  background: var(--step-2);
+}
+[data-concept='b'] .stage-dot[data-index='3'] {
+  background: var(--step-3);
+}
+[data-concept='b'] .stage-dot[data-index='4'] {
+  background: var(--step-4);
+}
+
+/* Readiness meter */
+[data-concept='b'] .b-meter {
+  display: inline-flex;
+  gap: 3px;
+}
+[data-concept='b'] .b-meter i {
+  display: block;
+  width: 14px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--canvas-2);
+}
+[data-concept='b'] .b-meter i[data-on='true'] {
+  background: var(--step-2);
+}
+
+/* Board drag feedback */
+[data-concept='b'] .b-card {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+[data-concept='b'] .b-card:hover {
+  box-shadow: 0 10px 24px -14px rgb(17 28 45 / 0.35);
+}
+[data-concept='b'] .b-card[data-dragging='true'] {
+  transform: rotate(1.5deg) scale(1.02);
+  box-shadow: 0 18px 36px -16px rgb(17 28 45 / 0.45);
+  opacity: 0.9;
+}
+[data-concept='b'] .b-column[data-over='true'] .b-dropzone {
+  outline: 2px dashed var(--step-2);
+  outline-offset: -2px;
+  background: var(--mint-soft);
+}
+
+/* Flow */
+[data-concept='b'] .b-ribbon {
+  transition: opacity 180ms ease;
+}
+
+/* Dialogs pick up B's rounder geometry. */
+[data-concept='b'].lab-dialog {
+  border-radius: 22px;
+}
+[data-concept='b'] .lab-dialog-title {
+  font-family: var(--display-font);
+  font-variation-settings: 'opsz' 28;
+  font-weight: 650;
+}
+[data-concept='b'] .lab-primary {
+  background: var(--mint);
+  color: var(--ink);
+}
+[data-concept='b'] .lab-primary:hover {
+  background: #93dcae;
+}
+
+/* ── Refined Growth Studio (Phase 02A+): Concept A's Thread, in B's ramp ───────────────── */
+[data-concept='b'] .g-thread {
+  display: inline-flex;
+  align-items: center;
+}
+[data-concept='b'] .g-thread i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.25px #c3cbc3;
+}
+[data-concept='b'] .g-thread b {
+  display: block;
+  width: 7px;
+  height: 1.5px;
+  background: #d5dbd4;
+}
+[data-concept='b'] .g-thread i[data-on='true'],
+[data-concept='b'] .g-thread b[data-on='true'] {
+  background: var(--step-3);
+  box-shadow: none;
+}
+[data-concept='b'] .g-thread i[data-current='true'] {
+  width: 9px;
+  height: 9px;
+  background: var(--mint);
+  box-shadow: inset 0 0 0 2px var(--step-4);
+}
+[data-concept='b'] .g-thread[data-lost='true'] {
+  opacity: 0.4;
+}
+
+[data-concept='b'] .g-stepper {
+  position: relative;
+}
+[data-concept='b'] .g-stepper::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 13px;
+  height: 2px;
+  border-radius: 2px;
+  background:
+    linear-gradient(90deg, var(--mint), var(--mint)) left / var(--reached, 0%) 100% no-repeat,
+    var(--ink-line);
+  transition: background-size 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-concept='b'] .g-step-node {
+  position: relative;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--ink-line);
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+[data-concept='b'] .g-step-node[data-on='true'] {
+  background: var(--mint);
+  box-shadow: none;
+}
+[data-concept='b'] .g-step-node[data-current='true'] {
+  background: var(--mint);
+  box-shadow:
+    0 0 0 4px rgb(168 230 191 / 0.25),
+    inset 0 0 0 3px var(--ink);
+  transform: scale(1.15);
+}
+[data-concept='b'] .g-timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 8px;
+  bottom: 8px;
+  width: 1.5px;
+  background: var(--line);
+}
+[data-concept='b'] .g-timeline {
+  position: relative;
+}

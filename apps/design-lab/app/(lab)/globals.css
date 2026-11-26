@@ -1,0 +1,180 @@
+@import '@krinly/ui/styles.css';
+@import '../../concepts/a/a.css';
+@import '../../concepts/b/b.css';
+
+/* Design-lab tokens. Scoped per concept so prototype styles never touch packages/ui tokens. */
+
+:root {
+  --ink: #111c2d;
+  --ink-2: #3a4555;
+  --ink-3: #5c6676;
+  --canvas: #f5f6f4;
+  --canvas-2: #eceeea;
+  --surface: #ffffff;
+  --line: #dfe3de;
+  --line-soft: #e9ece8;
+  --mint: #a8e6bf;
+  --mint-soft: #e2f5e9;
+  --growth: #287d57;
+  --verified: #0b6e78;
+  --verified-soft: #ddf0f1;
+  --attention: #8a5300;
+  --attention-soft: #fcefd6;
+  --critical: #b42318;
+  --critical-soft: #fde6e2;
+  --on-ink: #eef2f7;
+  --on-ink-2: #a3afc0;
+  --ink-raised: #1c2a40;
+  --ink-line: #2b3a52;
+  --focus: #287d57;
+  --ui-font: var(--font-anek), var(--font-anek-deva), var(--font-anek-tamil), system-ui, sans-serif;
+  --display-font:
+    var(--font-anek), var(--font-anek-deva), var(--font-anek-tamil), system-ui, sans-serif;
+
+  /* Re-skin reused @krinly/ui primitives (Button, Input, Label). */
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--canvas-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--canvas-2);
+  --muted-foreground: var(--ink-3);
+  --destructive: var(--critical);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--focus);
+}
+
+/* The lab keeps a light scheme regardless of OS preference (dark mode is out of scope for 02A). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--canvas);
+    --foreground: var(--ink);
+    --card: var(--surface);
+    --card-foreground: var(--ink);
+    --primary: var(--ink);
+    --primary-foreground: #ffffff;
+    --secondary: var(--canvas-2);
+    --secondary-foreground: var(--ink);
+    --muted: var(--canvas-2);
+    --muted-foreground: var(--ink-3);
+    --border: var(--line);
+    --input: var(--line);
+    --ring: var(--focus);
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-canvas: var(--canvas);
+  --color-canvas-2: var(--canvas-2);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
+  --color-growth: var(--growth);
+  --color-verified: var(--verified);
+  --color-verified-soft: var(--verified-soft);
+  --color-attention: var(--attention);
+  --color-attention-soft: var(--attention-soft);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-on-ink: var(--on-ink);
+  --color-on-ink-2: var(--on-ink-2);
+  --color-ink-raised: var(--ink-raised);
+  --color-ink-line: var(--ink-line);
+  --font-ui: var(--ui-font);
+  --font-display: var(--display-font);
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--ui-font);
+  background: var(--canvas);
+  color: var(--ink);
+  font-feature-settings: 'kern';
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+}
+.skip-link:focus-visible {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Radix overlays — shared motion, removed by the reduced-motion rule above. */
+@keyframes lab-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes lab-slide-in-right {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+@keyframes lab-slide-up {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+@keyframes lab-pop {
+  from {
+    transform: translateY(4px) scale(0.98);
+    opacity: 0;
+  }
+}
+.lab-overlay[data-state='open'] {
+  animation: lab-fade-in 160ms ease-out;
+}
+.lab-pop[data-state='open'] {
+  animation: lab-pop 140ms ease-out;
+}
+.lab-sheet[data-state='open'] {
+  animation: lab-slide-in-right 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@media (max-width: 639px) {
+  .lab-sheet[data-state='open'] {
+    animation: lab-slide-up 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}

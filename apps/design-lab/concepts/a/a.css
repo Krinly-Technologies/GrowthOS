@@ -1,0 +1,345 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Concept A — Quiet Intelligence. Signature: the Thread.
+   Keep colour values in sync with lib/palettes.ts (Concept A).
+   ───────────────────────────────────────────────────────────────────────────── */
+
+[data-concept='a'] {
+  --ink: #111c2d;
+  --ink-2: #3a4555;
+  --ink-3: #5c6676;
+  --canvas: #f5f6f4;
+  --canvas-2: #eceeea;
+  --surface: #ffffff;
+  --line: #dfe3de;
+  --line-soft: #ebeee9;
+  --mint: #a8e6bf;
+  --mint-soft: #e2f5e9;
+  --growth: #287d57;
+  --focus: #287d57;
+  --thread: #c9cfc8;
+  --thread-reached: #287d57;
+  --ui-font: var(--font-anek), var(--font-anek-deva), var(--font-anek-tamil), system-ui, sans-serif;
+  --display-font:
+    var(--font-anek), var(--font-anek-deva), var(--font-anek-tamil), system-ui, sans-serif;
+}
+
+/* Only the type family and leading are set on the concept root. Colour and size are left to
+   inheritance and utilities, so portalled panels that carry data-concept on their root (sheets,
+   menus, dialogs) keep their own text-* classes. */
+[data-concept='a'] {
+  font-family: var(--ui-font);
+  line-height: 1.45;
+}
+
+/* The figure: same family as the interface (Anek), semi-condensed, proportional digits. */
+[data-concept='a'] .a-figure {
+  font-family: var(--display-font);
+  font-stretch: 84%;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  font-variant-numeric: proportional-nums lining-nums;
+}
+[data-concept='a'] .a-title {
+  font-stretch: 92%;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────────────────────── */
+[data-concept='a'] .a-sidebar {
+  width: 72px;
+  transition: width 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-concept='a'] .a-sidebar .a-when-expanded {
+  display: none;
+}
+[data-concept='a'] .a-sidebar .a-when-collapsed {
+  display: flex;
+}
+@media (min-width: 1024px) {
+  [data-concept='a'] .a-sidebar[data-collapsed='false'] {
+    width: 248px;
+  }
+  [data-concept='a'] .a-sidebar[data-collapsed='false'] .a-when-expanded {
+    display: flex;
+  }
+  [data-concept='a'] .a-sidebar[data-collapsed='false'] .a-when-collapsed {
+    display: none;
+  }
+}
+
+/* The Thread in the navigation: one vertical line through the journey modules. */
+[data-concept='a'] .a-thread-nav {
+  position: relative;
+}
+[data-concept='a'] .a-thread-nav::before {
+  content: '';
+  position: absolute;
+  top: var(--thread-inset, 18px);
+  bottom: var(--thread-inset, 18px);
+  left: var(--thread-x, 21px);
+  width: 1.5px;
+  background: var(--thread);
+  border-radius: 1px;
+}
+[data-concept='a'] .a-node {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--canvas);
+  box-shadow: inset 0 0 0 1.5px var(--thread);
+  transition:
+    background 200ms ease,
+    box-shadow 200ms ease;
+}
+[data-concept='a'] .a-node[data-tone='attention'] {
+  box-shadow: inset 0 0 0 2px #c27c0e;
+  background: #fbe6bf;
+}
+[data-concept='a'] [aria-current='page'] .a-node {
+  background: var(--mint);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ink),
+    0 0 0 3px var(--canvas);
+}
+[data-concept='a'] .a-node-lg {
+  width: 13px;
+  height: 13px;
+}
+
+[data-concept='a'] .a-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  padding: 0 10px 0 17px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+[data-concept='a'] .a-nav-item:hover {
+  background: var(--canvas-2);
+  color: var(--ink);
+}
+[data-concept='a'] .a-nav-item[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 600;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/* Collapsed rail: icons strung on the thread. */
+[data-concept='a'] .a-rail-item {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  background: var(--canvas);
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+[data-concept='a'] .a-rail-item:hover {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink-3);
+}
+[data-concept='a'] .a-rail-item[aria-current='page'] {
+  color: var(--ink);
+  background: var(--mint);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+[data-concept='a'] .a-rail-badge {
+  position: absolute;
+  top: -2px;
+  right: -3px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #fbe6bf;
+  color: #6b4100;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 17px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--canvas);
+}
+
+/* ── Stage micro-thread (lead rows) ───────────────────────────────────────── */
+[data-concept='a'] .a-micro {
+  display: inline-flex;
+  align-items: center;
+}
+[data-concept='a'] .a-micro i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.25px var(--thread);
+}
+[data-concept='a'] .a-micro b {
+  display: block;
+  width: 7px;
+  height: 1.25px;
+  background: var(--thread);
+}
+[data-concept='a'] .a-micro i[data-on='true'] {
+  background: var(--thread-reached);
+  box-shadow: none;
+}
+[data-concept='a'] .a-micro b[data-on='true'] {
+  background: var(--thread-reached);
+}
+[data-concept='a'] .a-micro i[data-current='true'] {
+  width: 8px;
+  height: 8px;
+  background: var(--mint);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+[data-concept='a'] .a-micro[data-lost='true'] i,
+[data-concept='a'] .a-micro[data-lost='true'] b {
+  opacity: 0.45;
+}
+
+/* ── Journey thread (Today) and stage thread (drawer) ─────────────────────── */
+[data-concept='a'] .a-journey {
+  position: relative;
+}
+[data-concept='a'] .a-journey::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 14px;
+  bottom: 14px;
+  width: 1.5px;
+  background:
+    linear-gradient(var(--thread-reached), var(--thread-reached)) top / 100% var(--reached, 100%)
+      no-repeat,
+    var(--thread);
+}
+[data-concept='a'] .a-stage-thread {
+  position: relative;
+}
+[data-concept='a'] .a-stage-thread::before {
+  content: '';
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 9px;
+  height: 1.5px;
+  background:
+    linear-gradient(90deg, var(--thread-reached), var(--thread-reached)) left / var(--reached, 0%)
+      100% no-repeat,
+    var(--thread);
+  transition: background-size 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+[data-concept='a'] .a-stage-node {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 19px;
+  height: 19px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--thread);
+  transition:
+    background 240ms ease,
+    box-shadow 240ms ease,
+    transform 240ms ease;
+}
+[data-concept='a'] .a-stage-node[data-on='true'] {
+  background: var(--thread-reached);
+  box-shadow: inset 0 0 0 1.5px var(--thread-reached);
+}
+[data-concept='a'] .a-stage-node[data-current='true'] {
+  background: var(--mint);
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    0 0 0 4px var(--surface);
+  transform: scale(1.08);
+}
+
+/* Timeline hanging off the thread (drawer). */
+[data-concept='a'] .a-timeline {
+  position: relative;
+}
+[data-concept='a'] .a-timeline::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 6px;
+  bottom: 6px;
+  width: 1.5px;
+  background: var(--line);
+}
+
+/* Board header thread. */
+[data-concept='a'] .a-board-thread {
+  position: relative;
+}
+[data-concept='a'] .a-board-thread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1.5px;
+  background: var(--thread);
+}
+
+/* Stage dots inside shared menus. */
+[data-concept='a'] .stage-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--thread-reached);
+}
+[data-concept='a'] .stage-dot[data-index='4'] {
+  background: var(--thread-reached);
+}
+
+/* Bottom tabs (mobile): the thread runs along the top edge. */
+[data-concept='a'] .a-tabbar {
+  box-shadow: inset 0 1.5px 0 var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+[data-concept='a'] .a-tab[aria-current='page'] {
+  color: var(--ink);
+}
+[data-concept='a'] .a-tab[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 999px;
+  background: var(--mint);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+/* Dialogs and menus pick up the concept's softer radius. */
+[data-concept='a'].lab-dialog {
+  border-radius: 14px;
+}
+[data-concept='a'] .lab-dialog-title {
+  font-stretch: 92%;
+}
+
+/* Board drag feedback. */
+[data-concept='a'] .a-card[data-dragging='true'] {
+  opacity: 0.55;
+}
+[data-concept='a'] .a-column[data-over='true'] {
+  background: var(--mint-soft);
+  box-shadow: inset 0 0 0 1.5px var(--growth);
+}

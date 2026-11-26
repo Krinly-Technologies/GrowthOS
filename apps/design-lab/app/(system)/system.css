@@ -1,0 +1,2 @@
+/* The showcase loads only the design system, exactly as a production app does. */
+@import '@krinly/ui/styles.css';
