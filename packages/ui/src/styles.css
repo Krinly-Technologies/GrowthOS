@@ -1,51 +1,192 @@
 @import 'tailwindcss';
 
-/* Scan shared component sources in addition to each app's own files. */
+/* Scan shared sources in addition to each app's own files. */
 @source './components';
+@source './patterns';
 
-@custom-variant dark (&:is(.dark *));
+/* Dark mode is opt-in: `.dark` on <html> (or any ancestor). Apps choose when to follow the OS. */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   Krinly design tokens — official direction: B+ "Refined Growth Studio".
+   Components use the semantic names only; never hard-code these hex values.
+   See docs/frontend/design-system.md.
+   ───────────────────────────────────────────────────────────────────────────── */
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.2 0.01 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.01 260);
-  --primary: oklch(0.45 0.13 160);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0.005 260);
-  --secondary-foreground: oklch(0.25 0.01 260);
-  --muted: oklch(0.96 0.005 260);
-  --muted-foreground: oklch(0.5 0.01 260);
-  --destructive: oklch(0.55 0.2 27);
-  --border: oklch(0.91 0.005 260);
-  --input: oklch(0.91 0.005 260);
-  --ring: oklch(0.45 0.13 160);
+  /* Brand */
+  --brand: #111c2d; /* navy shell, ink */
+  --brand-raised: #1c2a40; /* hover/selected on navy, hero panels */
+  --brand-line: #2b3a52; /* dividers on navy */
+  --on-brand: #eef2f7; /* text on navy */
+  --on-brand-2: #a3afc0; /* secondary text on navy */
+  --accent: #a8e6bf; /* mint: brand voice — fills and text on navy only */
+  --accent-hover: #93dcae;
+  --accent-strong: #287d57; /* growth green: emphasis on light surfaces */
+
+  /* Surfaces (light) */
+  --canvas: #f4f6f3; /* raised workspace sheet */
+  --canvas-2: #e8ece7; /* hover, subtle fills */
+  --surface: #ffffff; /* cards, tables, panels */
+  --line: #e0e5df;
+  --line-soft: #ebefea;
+
+  /* Text */
+  --ink: #111c2d;
+  --ink-2: #3a4555;
+  --ink-3: #5c6676; /* AA on canvas and surface */
+
+  /* Status — never the brand colours; always paired with a label or icon */
+  --verified: #0b6e78;
+  --verified-soft: #ddf0f1;
+  --verified-on-brand: #7fd4dc;
+  --attention: #8a5300;
+  --attention-soft: #fcefd6;
+  --attention-dot: #c27c0e;
+  --critical: #b42318;
+  --critical-soft: #fde6e2;
+  --info: #2f5b8a;
+  --info-soft: #e3edf8;
+
+  /* Progression ramp (validated ordinal ramp: one hue, monotone lightness) */
+  --step-1: #76c29a;
+  --step-2: #4caa7a;
+  --step-3: #2d8a5c;
+  --step-4: #1b5f40;
+  --step-off: #cbd3cb;
+  --lost: #cdd3da;
+  --chart-current: #287d57;
+  --chart-previous: #a3aca3;
+  --chart-grid: #e7eae6;
+
+  --focus: #287d57;
+  --overlay: rgb(17 28 45 / 0.42);
+
+  /* Type */
+  --kr-font-sans:
+    var(--font-manrope), var(--font-noto-deva), var(--font-noto-tamil), system-ui, sans-serif;
+  --kr-font-display:
+    var(--font-bricolage), var(--font-noto-deva), var(--font-noto-tamil), system-ui, sans-serif;
+
+  /* Shape, elevation, motion */
+  --radius: 0.625rem;
+  --kr-shadow-ring: 0 0 0 1px var(--line);
+  --kr-shadow-sm: 0 1px 2px rgb(17 28 45 / 0.06);
+  --kr-shadow-md: 0 10px 24px -14px rgb(17 28 45 / 0.35);
+  --kr-shadow-lg: 0 24px 48px -20px rgb(17 28 45 / 0.45);
+  --kr-shadow-overlay: 0 40px 80px -30px rgb(0 0 0 / 0.55);
+  --duration-fast: 140ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* shadcn aliases, kept so existing app screens continue to work */
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: var(--canvas-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--canvas-2);
+  --muted-foreground: var(--ink-3);
+  --destructive: var(--critical);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--focus);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: oklch(0.17 0.01 260);
-    --foreground: oklch(0.96 0 0);
-    --card: oklch(0.21 0.01 260);
-    --card-foreground: oklch(0.96 0 0);
-    --primary: oklch(0.7 0.14 160);
-    --primary-foreground: oklch(0.15 0.01 260);
-    --secondary: oklch(0.27 0.01 260);
-    --secondary-foreground: oklch(0.96 0 0);
-    --muted: oklch(0.27 0.01 260);
-    --muted-foreground: oklch(0.72 0.01 260);
-    --destructive: oklch(0.65 0.2 27);
-    --border: oklch(0.3 0.01 260);
-    --input: oklch(0.32 0.01 260);
-    --ring: oklch(0.7 0.14 160);
-  }
+/* Dark theme foundation (the navy shell stays navy; surfaces deepen). Opt-in via `.dark`;
+   no app ships dark mode yet, so nothing changes for existing screens. */
+.dark {
+  --canvas: #0d1522;
+  --canvas-2: #17233a;
+  --surface: #142033;
+  --line: #24344d;
+  --line-soft: #1d2b42;
+  --ink: #e8edf4;
+  --ink-2: #c3ccd8;
+  --ink-3: #9aa7b8;
+  --brand: #0a111c;
+  --brand-raised: #17233a;
+  --accent-strong: #6fcf9b;
+  --verified: #6fd0db;
+  --verified-soft: #103a40;
+  --attention: #f3c26b;
+  --attention-soft: #3a2a0c;
+  --critical: #ff9a8b;
+  --critical-soft: #3d1a17;
+  --info: #9cc3ee;
+  --info-soft: #172c45;
+  --step-off: #2e3d52;
+  --lost: #3a4658;
+  --chart-current: #6fcf9a;
+  --chart-previous: #63718a;
+  --chart-grid: #22314a;
+  --focus: #6fcf9b;
+  --overlay: rgb(0 0 0 / 0.6);
+  --kr-shadow-ring: 0 0 0 1px var(--line);
+  --primary: #e8edf4;
+  --primary-foreground: #0d1522;
+  /* Solid fill behind white text (the light-on-dark --critical is for text, not fills). */
+  --destructive: #c4322a;
+  color-scheme: dark;
 }
-
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
+  --color-brand: var(--brand);
+  --color-brand-raised: var(--brand-raised);
+  --color-brand-line: var(--brand-line);
+  --color-on-brand: var(--on-brand);
+  --color-on-brand-2: var(--on-brand-2);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-strong: var(--accent-strong);
+  --color-canvas: var(--canvas);
+  --color-canvas-2: var(--canvas-2);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-verified: var(--verified);
+  --color-verified-soft: var(--verified-soft);
+  --color-verified-on-brand: var(--verified-on-brand);
+  --color-attention: var(--attention);
+  --color-attention-soft: var(--attention-soft);
+  --color-attention-dot: var(--attention-dot);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-step-1: var(--step-1);
+  --color-step-2: var(--step-2);
+  --color-step-3: var(--step-3);
+  --color-step-4: var(--step-4);
+  --color-step-off: var(--step-off);
+  --color-lost: var(--lost);
+  --color-chart-current: var(--chart-current);
+  --color-chart-previous: var(--chart-previous);
+  --color-chart-grid: var(--chart-grid);
+  --color-focus: var(--focus);
+  --color-overlay: var(--overlay);
+
+  --font-sans: var(--kr-font-sans);
+  --font-display: var(--kr-font-display);
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.375rem;
+
+  --shadow-ring: var(--kr-shadow-ring);
+  --shadow-card: var(--kr-shadow-sm);
+  --shadow-raised: var(--kr-shadow-md);
+  --shadow-floating: var(--kr-shadow-lg);
+  --shadow-overlay: var(--kr-shadow-overlay);
+
+  /* shadcn aliases */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -64,9 +205,83 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Numbers that align in columns. Hero figures keep proportional digits. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .font-display {
+    font-variation-settings: 'opsz' 28;
+  }
+  .display-figure {
+    font-family: var(--kr-font-display);
+    font-variation-settings: 'opsz' 96;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    font-variant-numeric: proportional-nums lining-nums;
+  }
+  .on-brand :focus-visible,
+  .on-brand:focus-visible {
+    outline-color: var(--accent);
+  }
+}
+
+/* Overlay motion — removed entirely under reduced motion. */
+@keyframes kr-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes kr-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+@keyframes kr-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes kr-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+.kr-overlay[data-state='open'] {
+  animation: kr-fade-in var(--duration-base) ease-out;
+}
+.kr-pop[data-state='open'] {
+  animation: kr-pop var(--duration-fast) var(--ease-out);
+}
+.kr-sheet[data-state='open'] {
+  animation: kr-slide-in var(--duration-base) var(--ease-out);
+}
+@media (max-width: 639px) {
+  .kr-sheet[data-state='open'] {
+    animation: kr-slide-up var(--duration-base) var(--ease-out);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

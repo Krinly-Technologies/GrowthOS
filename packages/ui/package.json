@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "shadcn/ui components shared by the Krinly web apps. Consumed as source (transpilePackages).",
+  "description": "Krinly design system: tokens, components and patterns shared by the web apps. Consumed as source (transpilePackages).",
   "exports": {
     "./styles.css": "./src/styles.css",
     "./lib/utils": "./src/lib/utils.ts",
-    "./components/*": "./src/components/*.tsx"
+    "./lib/format": "./src/lib/format.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./patterns/*": "./src/patterns/*.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
