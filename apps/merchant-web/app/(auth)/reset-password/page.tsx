@@ -15,7 +15,7 @@ export default function ResetPasswordPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Choose a new password</CardTitle>
+        <CardTitle as="h1">Choose a new password</CardTitle>
         <CardDescription>You will stay signed in after saving.</CardDescription>
       </CardHeader>
       <CardContent>

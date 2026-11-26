@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@krinly/ui/components/card';
-import { Input } from '@krinly/ui/components/input';
-import { Label } from '@krinly/ui/components/label';
+import { Field } from '@krinly/ui/components/field';
+import { Input, Select } from '@krinly/ui/components/input';
 import { browserCoreApi } from '@krinly/web-auth/browser';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -101,10 +101,8 @@ export function MembersPanel({
               action={onInvite}
               className="grid gap-4 sm:grid-cols-[1fr_auto_auto] sm:items-end"
             >
-              <div className="grid gap-2">
-                <Label htmlFor="invite-email">Email</Label>
+              <Field label="Email">
                 <Input
-                  id="invite-email"
                   type="email"
                   required
                   value={email}
@@ -112,12 +110,9 @@ export function MembersPanel({
                     setEmail(e.target.value);
                   }}
                 />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="invite-role">Role</Label>
-                <select
-                  id="invite-role"
-                  className="h-9 rounded-md border border-input bg-background px-2 text-sm focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+              </Field>
+              <Field label="Role">
+                <Select
                   value={roleKey}
                   onChange={(e) => {
                     setRoleKey(e.target.value);
@@ -128,8 +123,8 @@ export function MembersPanel({
                       {role.label}
                     </option>
                   ))}
-                </select>
-              </div>
+                </Select>
+              </Field>
               <Button type="submit" disabled={invite.isPending}>
                 {invite.isPending ? 'Sending…' : 'Create invitation'}
               </Button>

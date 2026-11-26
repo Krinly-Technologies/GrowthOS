@@ -1,0 +1,3 @@
+# Screenshots and results from running these scripts are throwaway review artefacts, not source.
+*.png
+results.json

@@ -1,25 +1,27 @@
 'use client';
 
+import { Select } from '@krinly/ui/components/input';
 import { useRouter } from 'next/navigation';
 
 const NEW_ORGANIZATION = '__new__';
 
-export function OrganizationSwitcher({
+export function WorkspaceSwitcher({
   currentId,
   organizations,
+  className,
 }: {
   currentId: string;
   organizations: { id: string; name: string }[];
+  className?: string;
 }) {
   const router = useRouter();
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <label htmlFor="organization-switcher" className="sr-only">
+    <div className={className}>
+      <label htmlFor="workspace-switcher" className="sr-only">
         Switch workspace
       </label>
-      <select
-        id="organization-switcher"
-        className="h-8 rounded-md border border-input bg-background px-2 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+      <Select
+        id="workspace-switcher"
         value={currentId}
         onChange={(e) => {
           router.push(e.target.value === NEW_ORGANIZATION ? '/onboarding' : `/o/${e.target.value}`);
@@ -31,7 +33,7 @@ export function OrganizationSwitcher({
           </option>
         ))}
         <option value={NEW_ORGANIZATION}>+ New workspace</option>
-      </select>
+      </Select>
     </div>
   );
 }

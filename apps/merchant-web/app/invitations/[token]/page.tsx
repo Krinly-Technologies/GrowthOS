@@ -16,7 +16,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ tok
     <main className="flex min-h-svh items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>You have been invited</CardTitle>
+          <CardTitle as="h1">You have been invited</CardTitle>
           <CardDescription>
             Accept to join the workspace with the role you were invited to. The invitation must have
             been sent to the email address you are signed in with.

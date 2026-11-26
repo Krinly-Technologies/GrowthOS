@@ -47,9 +47,13 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return <div data-slot="card-header" className={cn('grid gap-1', className)} {...props} />;
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'h2'>) {
+function CardTitle({
+  as: Comp = 'h2',
+  className,
+  ...props
+}: React.ComponentProps<'h2'> & { as?: 'h1' | 'h2' }) {
   return (
-    <h2
+    <Comp
       data-slot="card-title"
       className={cn('font-display text-lg leading-snug font-semibold tracking-tight', className)}
       {...props}

@@ -19,14 +19,19 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { next, error } = await searchParams;
+  const safeNext = safeNextPath(next);
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>Welcome back to your Krinly workspace.</CardDescription>
+        <CardTitle as="h1">Sign in</CardTitle>
+        <CardDescription>
+          {safeNext !== '/'
+            ? 'Sign in to continue to your workspace.'
+            : 'Welcome back to your Krinly workspace.'}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm next={safeNextPath(next)} linkError={error === 'link-invalid'} />
+        <LoginForm next={safeNext} linkError={error === 'link-invalid'} />
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <Link className="underline underline-offset-4" href="/forgot-password">
