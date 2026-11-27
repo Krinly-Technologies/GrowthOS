@@ -1,3 +1,4 @@
+import { Badge } from '@krinly/ui/components/badge';
 import { Button } from '@krinly/ui/components/button';
 import {
   Card,
@@ -7,8 +8,14 @@ import {
   CardTitle,
 } from '@krinly/ui/components/card';
 import { serverCoreApi } from '@krinly/web-auth/server';
+import Link from 'next/link';
 
 const dateTime = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+const EXPIRING_SOON_MS = 24 * 60 * 60 * 1000;
+
+function isExpiringSoon(expiresAt: string): boolean {
+  return new Date(expiresAt).getTime() - Date.now() <= EXPIRING_SOON_MS;
+}
 
 function SignOut() {
   return (
@@ -65,16 +72,44 @@ export default async function AdminHomePage() {
               <p className="text-sm text-muted-foreground">You have no active access grants.</p>
             ) : (
               <ul className="divide-y">
-                {data.activeGrants.map((grant) => (
-                  <li key={grant.id} className="grid gap-1 py-3 text-sm">
-                    <span className="font-medium">{grant.organization.name}</span>
-                    <span className="text-muted-foreground">
-                      {grant.reason} · until {dateTime.format(new Date(grant.expiresAt))}
-                    </span>
-                  </li>
-                ))}
+                {data.activeGrants.map((grant) => {
+                  const expiringSoon = isExpiringSoon(grant.expiresAt);
+                  return (
+                    <li
+                      key={grant.id}
+                      className="flex items-center justify-between gap-3 py-3 text-sm"
+                    >
+                      <div className="grid gap-1">
+                        <span className="flex items-center gap-2 font-medium">
+                          {grant.organization.name}
+                          <Badge tone={expiringSoon ? 'attention' : 'verified'}>
+                            {expiringSoon ? 'Expiring soon' : 'Active'}
+                          </Badge>
+                        </span>
+                        <span className="text-muted-foreground">
+                          {grant.reason} · until {dateTime.format(new Date(grant.expiresAt))}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Support preview</CardTitle>
+            <CardDescription>
+              A deeper support workspace — fictional data, for demonstrating screens core-api
+              doesn&apos;t have an endpoint for yet.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/preview">Open the development preview</Link>
+            </Button>
           </CardContent>
         </Card>
       </main>
