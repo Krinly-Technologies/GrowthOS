@@ -4,6 +4,7 @@ import { IconButton } from '@krinly/ui/components/button';
 import { Icon } from '@krinly/ui/components/icon';
 import { SkipLink } from '@krinly/ui/components/feedback';
 import { Tooltip } from '@krinly/ui/components/overlay';
+import { cn } from '@krinly/ui/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ReactNode, useState } from 'react';
@@ -206,10 +207,15 @@ export function AppShell({
         </main>
       </div>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav. Flex + horizontal scroll rather than forcing N equal columns, so a
+          longer list (e.g. the development preview's extra sections) stays legible instead of
+          squeezing every label down to fit. */}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-20 grid auto-cols-fr grid-flow-col border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
+        className={cn(
+          'fixed inset-x-0 bottom-0 z-20 flex overflow-x-auto border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden',
+          navItems.length <= 5 && 'grid auto-cols-fr grid-flow-col',
+        )}
       >
         {navItems.map((item) => {
           const href = item.href(org.id);
@@ -219,7 +225,7 @@ export function AppShell({
               key={item.key}
               href={href}
               aria-current={active ? 'page' : undefined}
-              className="flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-ink-3 aria-[current=page]:text-ink"
+              className="flex h-16 min-w-[76px] shrink-0 flex-1 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-ink-3 aria-[current=page]:text-ink"
             >
               <Icon name={item.icon} size={22} />
               {item.label}

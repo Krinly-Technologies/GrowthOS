@@ -38,6 +38,7 @@ export function createSeed(seed?: number): LabData {
     activities: [...story.activities, ...background.activities],
     payments: [...story.payments, ...background.payments],
     bookings: [...story.bookings, ...background.bookings],
+    quotations: [],
   };
   for (const payment of data.payments) data.activities.push(...paymentActivities(payment));
   data.activities.sort((a, b) => b.at - a.at);

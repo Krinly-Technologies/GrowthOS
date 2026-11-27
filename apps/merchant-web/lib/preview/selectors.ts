@@ -2,12 +2,14 @@ import { DAY, endOfDay, HOUR, startOfDay } from './clock';
 import {
   type Activity,
   type Booking,
+  bookingStatus,
   isOpen,
   type LabData,
   type Lead,
   type MemberId,
   type NextActionKind,
   type Payment,
+  type Quotation,
   type SourceId,
   type Stage,
   stageIndex,
@@ -150,6 +152,105 @@ export function appointmentsOn(data: LabData, day: number): Appointment[] {
     if (lead && booking.start >= start && booking.start < start + DAY) out.push({ booking, lead });
   }
   return out.sort((a, b) => a.booking.start - b.booking.start);
+}
+
+// ---------------------------------------------------------------- bookings, quotations, payments
+
+export function bookingsFor(data: LabData, leadId: string): Booking[] {
+  return data.bookings.filter((b) => b.leadId === leadId).sort((a, b) => b.start - a.start);
+}
+
+export function quotationsFor(data: LabData, leadId: string): Quotation[] {
+  return data.quotations
+    .filter((q) => q.leadId === leadId)
+    .sort((a, b) => b.updatedAt - a.updatedAt);
+}
+
+/** Every booking joined with its customer, newest first. */
+export function allAppointments(data: LabData): Appointment[] {
+  const byId = leadsById(data);
+  const out: Appointment[] = [];
+  for (const booking of data.bookings) {
+    const lead = byId.get(booking.leadId);
+    if (lead) out.push({ booking, lead });
+  }
+  return out.sort((a, b) => b.booking.start - a.booking.start);
+}
+
+export function upcomingAppointments(data: LabData, now: number): Appointment[] {
+  return allAppointments(data)
+    .filter((a) => bookingStatus(a.booking) !== 'cancelled' && a.booking.start >= startOfDay(now))
+    .sort((a, b) => a.booking.start - b.booking.start);
+}
+
+export function appointmentsInMonth(
+  data: LabData,
+  monthStart: number,
+  monthEnd: number,
+): Appointment[] {
+  return allAppointments(data).filter(
+    (a) => a.booking.start >= monthStart && a.booking.start < monthEnd,
+  );
+}
+
+/** Calendar-day key, independent of the viewer's timezone (matches the preview's fixed IST clock). */
+export function dayKey(ms: number): number {
+  return startOfDay(ms);
+}
+
+export interface QuotationRow {
+  quotation: Quotation;
+  lead: Lead;
+}
+
+export function allQuotations(data: LabData): QuotationRow[] {
+  const byId = leadsById(data);
+  const out: QuotationRow[] = [];
+  for (const quotation of data.quotations) {
+    const lead = byId.get(quotation.leadId);
+    if (lead) out.push({ quotation, lead });
+  }
+  return out.sort((a, b) => b.quotation.updatedAt - a.quotation.updatedAt);
+}
+
+export interface PaymentRow {
+  payment: Payment;
+  lead: Lead;
+}
+
+export function allPaymentRows(data: LabData): PaymentRow[] {
+  const byId = leadsById(data);
+  const out: PaymentRow[] = [];
+  for (const payment of data.payments) {
+    const lead = byId.get(payment.leadId);
+    if (lead) out.push({ payment, lead });
+  }
+  return out.sort((a, b) => b.payment.recordedAt - a.payment.recordedAt);
+}
+
+/** What the customer still owes against a booking: its value less what's recorded or verified. */
+export function outstandingForBooking(data: LabData, booking: Booking, lead: Lead): number {
+  const value = booking.value ?? lead.value;
+  const collected = data.payments
+    .filter(
+      (p) => p.bookingId === booking.id && (p.status === 'recorded' || p.status === 'verified'),
+    )
+    .reduce((sum, p) => sum + p.amount, 0);
+  return Math.max(0, value - collected);
+}
+
+export function verifiedRevenueForLead(data: LabData, leadId: string): number {
+  return sumAmounts(data.payments.filter((p) => p.leadId === leadId && p.status === 'verified'));
+}
+
+/** Loose name/phone/area match, for the Bookings, Quotations and Payments workspaces. */
+export function matchesCustomer(lead: Lead, q: string): boolean {
+  const needle = q.trim().toLowerCase();
+  if (!needle) return true;
+  const digits = needle.replace(/\D/g, '');
+  const haystack = [lead.name, lead.latinName ?? '', lead.area].join(' ').toLowerCase();
+  if (haystack.includes(needle)) return true;
+  return digits.length >= 3 && lead.phone.replace(/\D/g, '').includes(digits);
 }
 
 // ---------------------------------------------------------------- journey & sources

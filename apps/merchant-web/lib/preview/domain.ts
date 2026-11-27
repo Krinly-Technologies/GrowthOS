@@ -53,6 +53,7 @@ export type ActivityKind =
   | 'stage'
   | 'trial'
   | 'quotation'
+  | 'booking'
   | 'payment'
   | 'suggestion';
 
@@ -150,6 +151,13 @@ export interface Lead {
 export type PaymentMethod = 'UPI' | 'Bank transfer' | 'Card' | 'Cash';
 export type PaymentKind = 'Advance' | 'Balance' | 'Full payment';
 
+/**
+ * `requested`: a payment request raised, nothing received yet — never counts as collected.
+ * `recorded`: received and logged by the team, awaiting verification — not yet revenue.
+ * `verified`: confirmed and counted as revenue. `cancelled`/`failed`: the request fell through.
+ */
+export type PaymentStatus = 'requested' | 'recorded' | 'verified' | 'cancelled' | 'failed';
+
 export interface Payment {
   id: string;
   leadId: string;
@@ -157,11 +165,17 @@ export interface Payment {
   method: PaymentMethod;
   reference: string;
   kind: PaymentKind;
+  /** When requested, or when received if there was no prior request. */
   recordedAt: number;
   recordedBy: MemberId;
-  status: 'recorded' | 'verified';
+  status: PaymentStatus;
   verifiedAt?: number;
+  /** Set when the request/record was raised against a specific booking. */
+  bookingId?: string;
+  cancelReason?: string;
 }
+
+export type BookingStatus = 'scheduled' | 'confirmed' | 'completed' | 'cancelled';
 
 export interface Booking {
   id: string;
@@ -171,6 +185,57 @@ export interface Booking {
   start: number;
   minutes: number;
   with: MemberId;
+  /** Defaults to 'confirmed' when absent — every booking seeded before Phase 07 was. */
+  status?: BookingStatus;
+  /** Booking value in rupees, when distinct from the lead's quoted value. */
+  value?: number;
+  cancelReason?: string;
+  quotationId?: string;
+}
+
+export function bookingStatus(booking: Booking): BookingStatus {
+  return booking.status ?? 'confirmed';
+}
+
+export type QuotationStatus = 'draft' | 'sent' | 'accepted' | 'declined' | 'expired';
+
+export interface QuotationItem {
+  id: string;
+  description: string;
+  quantity: number;
+  /** Rupees. */
+  unitPrice: number;
+}
+
+export interface Quotation {
+  id: string;
+  leadId: string;
+  status: QuotationStatus;
+  items: QuotationItem[];
+  /** Flat rupee discount off the subtotal. */
+  discount: number;
+  validUntil: number;
+  note?: string;
+  createdAt: number;
+  updatedAt: number;
+  sentAt?: number;
+  respondedAt?: number;
+  /** Set once a booking has been created from this (accepted) quotation. */
+  bookingId?: string;
+}
+
+export function quotationSubtotal(quotation: Pick<Quotation, 'items'>): number {
+  return quotation.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+}
+
+export function quotationTotal(quotation: Pick<Quotation, 'items' | 'discount'>): number {
+  return Math.max(0, quotationSubtotal(quotation) - quotation.discount);
+}
+
+/** `sent` past its validity date reads as `expired` without a separate sweep/mutation. */
+export function quotationEffectiveStatus(quotation: Quotation, now: number): QuotationStatus {
+  if (quotation.status === 'sent' && quotation.validUntil < now) return 'expired';
+  return quotation.status;
 }
 
 export interface LabData {
@@ -178,4 +243,5 @@ export interface LabData {
   activities: Activity[];
   payments: Payment[];
   bookings: Booking[];
+  quotations: Quotation[];
 }

@@ -880,7 +880,7 @@ const STAGE_TEXT: Record<Stage, string> = {
 };
 
 export function buildStory(): LabData {
-  const data: LabData = { leads: [], activities: [], payments: [], bookings: [] };
+  const data: LabData = { leads: [], activities: [], payments: [], bookings: [], quotations: [] };
   for (const spec of SPECS) {
     const { stages, log, payments = [], bookings = [], ...rest } = spec;
     const last = stages[stages.length - 1];

@@ -2,7 +2,7 @@
 
 import type { IconName } from '@krinly/ui/components/icon';
 import { useMemo } from 'react';
-import type { Lead } from './domain';
+import { bookingStatus, type Lead } from './domain';
 import { dueInfo, inr, percent, plural, time, waited } from './format';
 import { resolveRange } from './ranges';
 import {
@@ -41,7 +41,9 @@ export function useTodayModel() {
     const ready = readyToBook(data);
     const followUps = followUpsDue(data, now);
     const appointments = appointmentsOn(data, now).filter(
-      (a) => a.booking.start + a.booking.minutes * 60_000 >= now - 60 * 60_000,
+      (a) =>
+        bookingStatus(a.booking) !== 'cancelled' &&
+        a.booking.start + a.booking.minutes * 60_000 >= now - 60 * 60_000,
     );
     const flow = journey(data, range.start, range.end);
     const sources = sourcePerformance(data, range);

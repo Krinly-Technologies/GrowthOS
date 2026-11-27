@@ -182,7 +182,7 @@ export const BACKGROUND_SEED = 3;
 
 export function buildBackground(seed = BACKGROUND_SEED): LabData {
   const rng = createRng(seed);
-  const data: LabData = { leads: [], activities: [], payments: [], bookings: [] };
+  const data: LabData = { leads: [], activities: [], payments: [], bookings: [], quotations: [] };
   let nameIndex = 0;
   let fairLeft = 3;
 

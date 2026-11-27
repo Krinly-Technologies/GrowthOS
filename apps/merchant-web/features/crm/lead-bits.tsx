@@ -39,6 +39,7 @@ export function activityIcon(activity: Activity): IconName {
     case 'stage':
       return 'growth';
     case 'trial':
+    case 'booking':
       return 'calendar';
     case 'quotation':
       return 'payments';
@@ -61,6 +62,7 @@ export function channelText(activity: Activity | undefined): string {
   if (activity.kind === 'note') return 'Note';
   if (activity.kind === 'trial') return 'Trial';
   if (activity.kind === 'quotation') return 'Quotation';
+  if (activity.kind === 'booking') return 'Booking';
   if (activity.kind === 'call') return 'Call';
   return 'Update';
 }

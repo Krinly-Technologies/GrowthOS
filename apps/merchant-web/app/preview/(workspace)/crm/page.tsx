@@ -44,6 +44,15 @@ function Crm() {
         setFollowUp: (leadId, label, due, kind) => {
           dispatch({ type: 'setFollowUp', leadId, label, due, kind });
         },
+        createBooking: (leadId, draft) => {
+          dispatch({ type: 'createBooking', leadId, draft, status: 'confirmed' });
+        },
+        requestPayment: (leadId, amount, kind) => {
+          dispatch({ type: 'requestPayment', leadId, amount, kind });
+        },
+        recordPayment: (leadId, amount, method, reference, kind) => {
+          dispatch({ type: 'recordPayment', leadId, amount, method, reference, kind });
+        },
       }}
     />
   );

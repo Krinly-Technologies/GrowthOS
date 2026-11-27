@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
   type MemberId,
   type NextActionKind,
+  type PaymentKind,
+  type PaymentMethod,
   type Stage,
   STAGE_LABEL,
   STAGES,
@@ -17,12 +19,14 @@ import { inrCompact, plural } from '@/lib/preview/format';
 import type { CrmModel } from '@/lib/preview/crm-model';
 import { SAVED_VIEWS } from '@/lib/preview/selectors';
 import { MEMBER_IDS, SOURCE_IDS, SOURCES, TEAM } from '@/lib/preview/sample/scenario';
-import type { LeadDraft } from '@/lib/preview/store';
-import { FilterMenu } from './filter-menu';
+import type { BookingDraft, LeadDraft } from '@/lib/preview/store';
+import { FilterMenu } from '@/features/common/filter-menu';
+import { BookDialog } from './book-dialog';
 import { LeadDetailSheet } from './lead-detail';
 import { LeadFormDialog } from './lead-form-dialog';
 import { LeadsList } from './leads-list';
 import { LostDialog } from './lost-dialog';
+import { CollectPaymentDialog } from './payment-dialog';
 import { PipelineBoardView } from './pipeline-board';
 
 export interface CrmActions {
@@ -36,6 +40,15 @@ export interface CrmActions {
   logCall: (leadId: string) => void;
   completeFollowUp: (leadId: string) => void;
   setFollowUp: (leadId: string, label: string, due: number, kind: NextActionKind) => void;
+  createBooking: (leadId: string, draft: BookingDraft) => void;
+  requestPayment: (leadId: string, amount: number, kind: PaymentKind) => void;
+  recordPayment: (
+    leadId: string,
+    amount: number,
+    method: PaymentMethod,
+    reference: string,
+    kind: PaymentKind,
+  ) => void;
 }
 
 /**
@@ -50,6 +63,8 @@ export function CrmWorkspace({ model, actions }: { model: CrmModel; actions: Crm
   const [prevQ, setPrevQ] = useState(model.query.q);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
+  const [booking, setBooking] = useState<string | null>(null);
+  const [collecting, setCollecting] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   // Keep the field in sync when the query changes from outside this component (Back, Clear all),
@@ -265,6 +280,29 @@ export function CrmWorkspace({ model, actions }: { model: CrmModel; actions: Crm
         }}
         onSetFollowUp={(lead, label, due, kind) => {
           actions.setFollowUp(lead.id, label, due, kind);
+        }}
+        onBook={(lead) => {
+          setBooking(lead.id);
+        }}
+        onCollectPayment={(lead) => {
+          setCollecting(lead.id);
+        }}
+      />
+
+      <BookDialog
+        lead={booking ? (model.byId.get(booking) ?? null) : null}
+        now={model.now}
+        onSave={actions.createBooking}
+        onClose={() => {
+          setBooking(null);
+        }}
+      />
+      <CollectPaymentDialog
+        lead={collecting ? (model.byId.get(collecting) ?? null) : null}
+        onRequest={actions.requestPayment}
+        onRecord={actions.recordPayment}
+        onClose={() => {
+          setCollecting(null);
         }}
       />
 

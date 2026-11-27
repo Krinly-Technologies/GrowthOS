@@ -21,6 +21,7 @@ import { ActivityTimeline } from '@krinly/ui/patterns/timeline';
 import { Money, VerificationStatus } from '@krinly/ui/patterns/money';
 import { ThreadStepper } from '@krinly/ui/patterns/thread';
 import { cn } from '@krinly/ui/lib/utils';
+import Link from 'next/link';
 import { useState } from 'react';
 import { DAY, endOfDay } from '@/lib/preview/clock';
 import {
@@ -62,6 +63,8 @@ export function LeadDetailSheet({
   onLogCall,
   onCompleteFollowUp,
   onSetFollowUp,
+  onBook,
+  onCollectPayment,
 }: {
   lead: Lead | undefined;
   model: CrmModel;
@@ -75,6 +78,8 @@ export function LeadDetailSheet({
   onLogCall: (lead: Lead) => void;
   onCompleteFollowUp: (lead: Lead) => void;
   onSetFollowUp: (lead: Lead, label: string, due: number, kind: NextActionKind) => void;
+  onBook: (lead: Lead) => void;
+  onCollectPayment: (lead: Lead) => void;
 }) {
   return (
     <Sheet
@@ -96,6 +101,8 @@ export function LeadDetailSheet({
           onLogCall={onLogCall}
           onCompleteFollowUp={onCompleteFollowUp}
           onSetFollowUp={onSetFollowUp}
+          onBook={onBook}
+          onCollectPayment={onCollectPayment}
         />
       ) : null}
     </Sheet>
@@ -114,6 +121,8 @@ function Panel({
   onLogCall,
   onCompleteFollowUp,
   onSetFollowUp,
+  onBook,
+  onCollectPayment,
 }: {
   lead: Lead;
   model: CrmModel;
@@ -126,6 +135,8 @@ function Panel({
   onLogCall: (lead: Lead) => void;
   onCompleteFollowUp: (lead: Lead) => void;
   onSetFollowUp: (lead: Lead, label: string, due: number, kind: NextActionKind) => void;
+  onBook: (lead: Lead) => void;
+  onCollectPayment: (lead: Lead) => void;
 }) {
   const [tab, setTab] = useState('activity');
   const { now, data } = model;
@@ -320,30 +331,36 @@ function Panel({
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Tooltip content="Arrives with messaging — not built yet.">
-                <span>
-                  <Button variant="outline" size="sm" shape="pill" disabled>
+              <Tooltip content="Open this customer's conversation in the Inbox.">
+                <Button asChild variant="outline" size="sm" shape="pill">
+                  <Link href={`/preview/inbox?c=${lead.id}`}>
                     <Icon name="message" size={15} />
                     Message
-                  </Button>
-                </span>
+                  </Link>
+                </Button>
               </Tooltip>
-              <Tooltip content="Arrives with Bookings — not built yet.">
-                <span>
-                  <Button variant="outline" size="sm" shape="pill" disabled>
-                    <Icon name="calendar" size={15} />
-                    Book a trial
-                  </Button>
-                </span>
-              </Tooltip>
-              <Tooltip content="Arrives with Payments — not built yet.">
-                <span>
-                  <Button variant="outline" size="sm" shape="pill" disabled>
-                    <Icon name="payments" size={15} />
-                    Collect payment
-                  </Button>
-                </span>
-              </Tooltip>
+              <Button
+                variant="outline"
+                size="sm"
+                shape="pill"
+                onClick={() => {
+                  onBook(lead);
+                }}
+              >
+                <Icon name="calendar" size={15} />
+                Book a trial
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                shape="pill"
+                onClick={() => {
+                  onCollectPayment(lead);
+                }}
+              >
+                <Icon name="payments" size={15} />
+                Collect payment
+              </Button>
             </div>
           </TooltipProvider>
 
@@ -457,7 +474,7 @@ function Panel({
             <TabsContent value="payments" className="mt-4">
               {payments.length === 0 ? (
                 <p className="rounded-2xl bg-canvas p-4 text-[13.5px] text-ink-3">
-                  No payments yet. Collecting payment arrives with the Payments module.
+                  No payments yet. Use &ldquo;Collect payment&rdquo; above to request or record one.
                 </p>
               ) : (
                 <ul className="divide-y divide-line-soft rounded-2xl bg-canvas px-4">
@@ -469,10 +486,18 @@ function Panel({
                           {p.method} · {p.reference} · {weekdayDayMonth(p.recordedAt)}
                         </span>
                       </span>
-                      <VerificationStatus
-                        verified={p.status === 'verified'}
-                        unverifiedLabel="Awaiting verification"
-                      />
+                      {p.status === 'verified' || p.status === 'recorded' ? (
+                        <VerificationStatus
+                          verified={p.status === 'verified'}
+                          unverifiedLabel="Awaiting verification"
+                        />
+                      ) : (
+                        <span className="text-xs font-semibold text-ink-3">
+                          {p.status === 'requested'
+                            ? 'Requested, not yet received'
+                            : `${p.status === 'cancelled' ? 'Cancelled' : 'Failed'}${p.cancelReason ? ` — ${p.cancelReason}` : ''}`}
+                        </span>
+                      )}
                       <Money amount={p.amount} className="w-20 text-right font-bold" />
                     </li>
                   ))}
