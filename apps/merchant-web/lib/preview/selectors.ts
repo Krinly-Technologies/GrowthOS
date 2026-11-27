@@ -193,6 +193,8 @@ export function journey(
 export interface SourceRow {
   source: SourceId;
   enquiries: number;
+  /** Reached 'interested' or further — a qualified lead, not just a raw enquiry. */
+  qualified: number;
   booked: number;
   /** Payments verified in the period, credited to each customer's first source (prototype rule). */
   revenue: number;
@@ -212,6 +214,8 @@ export function sourcePerformance(data: LabData, range: ResolvedRange): SourceRo
     return {
       source,
       enquiries: cohort.length,
+      qualified: cohort.filter((l) => stageIndex(furthestStage(l)) >= stageIndex('interested'))
+        .length,
       booked: cohort.filter((l) => stageIndex(furthestStage(l)) >= stageIndex('booked')).length,
       revenue: sumAmounts(paid),
       payments: paid.length,
@@ -221,6 +225,38 @@ export function sourcePerformance(data: LabData, range: ResolvedRange): SourceRo
   return rows
     .filter((r) => r.enquiries > 0 || r.revenue > 0)
     .sort((a, b) => b.revenue - a.revenue || b.enquiries - a.enquiries);
+}
+
+// ---------------------------------------------------------------- revenue intelligence
+
+/** What customers still owe, across every booking that isn't cancelled — a display figure. */
+export function outstandingTotal(data: LabData): number {
+  const byId = leadsById(data);
+  return data.bookings.reduce((sum, booking) => {
+    if (bookingStatus(booking) === 'cancelled') return sum;
+    const lead = byId.get(booking.leadId);
+    if (!lead) return sum;
+    return sum + outstandingForBooking(data, booking, lead);
+  }, 0);
+}
+
+/** Mean amount of payments verified in the period; 0 when none were. */
+export function averageVerifiedTransaction(data: LabData, range: ResolvedRange): number {
+  const verified = verifiedBetween(data, range.start, range.end);
+  return verified.length === 0 ? 0 : Math.round(sumAmounts(verified) / verified.length);
+}
+
+export interface LostOpportunity {
+  lead: Lead;
+  lostAt: number;
+}
+
+/** Leads marked lost while in this cohort's window, with the value that walked away. */
+export function lostOpportunities(data: LabData, range: ResolvedRange): LostOpportunity[] {
+  return data.leads
+    .filter((l) => l.stage === 'lost' && l.createdAt >= range.start && l.createdAt <= range.end)
+    .map((lead) => ({ lead, lostAt: stageEnteredAt(lead) }))
+    .sort((a, b) => b.lostAt - a.lostAt);
 }
 
 export interface SeriesPoint {

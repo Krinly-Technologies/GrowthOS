@@ -19,4 +19,5 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { key: 'overview', label: 'Workspace', icon: 'store', href: (orgId) => `/o/${orgId}` },
   { key: 'members', label: 'Team', icon: 'user', href: (orgId) => `/o/${orgId}/members` },
+  { key: 'settings', label: 'Settings', icon: 'settings', href: (orgId) => `/o/${orgId}/settings` },
 ];

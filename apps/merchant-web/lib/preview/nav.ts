@@ -10,4 +10,9 @@ export const PREVIEW_NAV_ITEMS: readonly NavItem[] = [
   { key: 'inbox', label: 'Inbox', icon: 'inbox', href: () => '/preview/inbox' },
   { key: 'crm', label: 'Leads', icon: 'leads', href: () => '/preview/crm' },
   { key: 'acquisition', label: 'Acquisition', icon: 'growth', href: () => '/preview/acquisition' },
+  { key: 'growth', label: 'Growth', icon: 'sparkline', href: () => '/preview/growth' },
+  { key: 'automation', label: 'Automation', icon: 'automation', href: () => '/preview/automation' },
+  { key: 'knowledge', label: 'Knowledge', icon: 'knowledge', href: () => '/preview/knowledge' },
+  { key: 'assistant', label: 'Assistant', icon: 'assistant', href: () => '/preview/assistant' },
+  { key: 'settings', label: 'Settings', icon: 'settings', href: () => '/preview/settings' },
 ];
