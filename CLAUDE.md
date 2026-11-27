@@ -26,6 +26,13 @@ Read `docs/architecture/decisions.md` before changing data access, auth or servi
 - Pin exact versions; pnpm's release-age policy and uv's `exclude-newer` must pass without
   exceptions.
 - Prefer framework features over new abstractions; add shared packages only with two consumers.
+- Reuse before building: prefer an existing in-repo implementation, then an already-installed
+  dependency, then a maintained permissively-licensed library (MIT/Apache-2.0/BSD; avoid AGPL or
+  restrictive licenses without explicit approval), then adapting an existing implementation, and
+  only then a custom build — for calendars, charting, drag-and-drop, QR/PDF, rich text, data
+  tables, forms, dates, workflow canvases and accessibility primitives. Style/compose libraries to
+  match the B+ design system rather than shipping their default look. Note significant dependency
+  choices briefly in the relevant handoff doc or PR description.
 
 ## Commands
 
